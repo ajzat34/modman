@@ -1,0 +1,25 @@
+{
+  "name": "modman",
+  "version": "0.0.1",
+  "description": "modular server management",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ajzat34/modman.git"
+  },
+  "author": "ajzat34",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ajzat34/modman/issues"
+  },
+  "homepage": "https://github.com/ajzat34/modman#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.9.2",
+    "systeminformation": "^4.22.3"
+  }
+}
