@@ -82,7 +82,7 @@ module.exports.actions = {
       if(err){ reject(err); return}
 
       if (!data.length) {
-        resolve( error.make(`process ${q.process} unknown by pm2/log`, 'pm2_process_unknown') )
+        resolve( error.make(`process ${q.process} unknown by pm2`, 'pm2_process_unknown') )
         return
       }
 
@@ -92,6 +92,7 @@ module.exports.actions = {
       var logf = 'error loading log...'
       var errf = 'error loading log...'
 
+      // replace with reading end of file
       try {
         logf = fs.readFileSync(logdir).toString()
       } catch (err) {
@@ -113,12 +114,56 @@ module.exports.actions = {
   })},
 
   flush: function(q) { return new Promise(function(resolve, reject){
-    var process = 'all'
-    if (q.process){process=q.process}
-
     pm2.flush(q.process, function(err, data){
       if(err){ reject(err); return}
       resolve({})
+    })
+  })},
+
+  rotate_logs: function(q) { return new Promise(function(resolve, reject){
+    pm2.reloadLogs(function(err, data){
+      if (err) { reject(err); return }
+      resolve(data)
+    })
+  })},
+
+  restart: function(q) { return new Promise(function(resolve, reject){
+    var process
+    if (q.process){process=q.process} else { resolve(error.make(`missing query param: process`, 'malformed_request')) }
+    pm2.restart(process, function(err, data){
+      if(err){
+        if (err.toString().endsWith('not found')) {
+          resolve(error.make(`process or namespace ${q.process} unknown`, 'unknwon_process'))
+          return
+        }
+        reject(err)
+        return
+      }
+      var r = []
+      for (var i in data) {
+        r.push(data[i].pm_id)
+      }
+      resolve({restarted: r})
+    })
+  })},
+
+  stop: function(q) { return new Promise(function(resolve, reject){
+    var process
+    if (q.process){process=q.process} else { resolve(error.make(`missing query param: process`, 'malformed_request')) }
+    pm2.stop(process, function(err, data){
+      if(err){
+        if (err.toString().endsWith('not found')) {
+          resolve(error.make(`process or namespace ${q.process} unknown`, 'unknwon_process'))
+          return
+        }
+        reject(err)
+        return
+      }
+      var r = []
+      for (var i in data) {
+        r.push(data[i].pm_id)
+      }
+      resolve({stopped: r})
     })
   })},
 

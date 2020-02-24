@@ -61,6 +61,9 @@ exports.create = function(options) {
     if (typeof action === 'object' || typeof action === 'string' || typeof action === 'number' ) {res.json(action); return}
     if (typeof action === 'function') {
       try {
+        // hide the token from the module
+        req.params.token = null
+        delete req.params.token
         res.json(await action(p.query, req))
       } catch(err) {
         console.error(err)
@@ -94,7 +97,6 @@ exports.create = function(options) {
       running = true
       em.emit('log', `modman-server listening on ${port}`)
     })
-
   }
 
   em.load = function(pkg) {

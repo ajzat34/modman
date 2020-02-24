@@ -14,6 +14,9 @@ var server = modman.server.create(options = {
 
 
 // load modules
+
+console.log('WARNING: this script uses a the included key and certificate, you should probably create your own')
+
 console.log('[modman]: loading modules...')
 server
   .on('load/loaded', (callname, printname, version) => { console.log(`  -> Loaded: ${printname} (${callname}.v${version})`)} )
@@ -21,5 +24,14 @@ server
 
   .load(require('./packages/sysinfo.js'))
   .load(require('./packages/pm2.js'))
+  .load(require('./packages/services.js').allow(['cron', 'zfs']))
 
 server.listen()
+
+// // test client
+// async function client(){
+//   var client = modman.client.create('localhost', 8000, 'secret', {allowSelfSigned: true})
+//   var networks = await client.query('sysinfo', 'network')
+//   console.log(networks)
+// }
+// client()
