@@ -5,13 +5,10 @@ const querystring = require('querystring')
 const error       = require('./error.js')
 const https       = require('https')
 
-process.on('unhandledRejection', (reason, promise) => {
-  console.log('Unhandled Rejection at:', reason.stack || reason)
-})
-
 // returns true if auth failed
-function auth(req, res, tokens){
+function auth(req, res, tokens, em){
   if (!tokens[req.params.token]) {
+    if (em) { em.emit('not-allowed', req.params.token, req) }
     res.json(error.make(`invalid token`, 'invalid_token'))
     return true
   }
@@ -41,20 +38,23 @@ exports.create = function(options) {
 
   // setup api calls
   app.get('/', function(req, res){
-    res.send(`modman v${info.version}\nlist modules at /api/<key>/modules\ncall modules with /api/<key>/module/<module>/<action>\n`)
+    res.send(`modman server\nlist modules at /api/<key>/modules\ncall modules with /api/<key>/module/<module>/<action>\n`)
   })
 
+  // module list
   app.get('/api/:token/modules', function(req, res){
-    if (auth(req, res, options.tokens)){return}
+    if (auth(req, res, options.tokens, em)){return}
     res.json(moduleinfo)
   })
 
+  // query modules
   app.get('/api/:token/query/:module/:action', async function(req, res){
-    if (auth(req,res,options.tokens)){return}
+    if (auth(req,res,options.tokens, em)){return}
+    em.emit('query', req)
     var p = url.parse(req.url, true)
     var q = req.params
     // check for query params
-    if (!modules[q.module]) { res.json(error.make(`module: "${p.query.module}" unknown by server`, 'module_unknown')); return }
+    if (!modules[q.module]) { res.json(error.make(`module: "${q.module}" unknown by server`, 'module_unknown')); return }
     if (!modules[q.module].actions[q.action]) { res.json(error.make(`action: "${q.action}" unknown by module: "${q.module}"`, 'module_action_unknown')); return }
     // query the module
     var action = modules[q.module].actions[q.action]
@@ -95,7 +95,7 @@ exports.create = function(options) {
     https.createServer(options, app)
     .listen(port, function () {
       running = true
-      em.emit('log', `modman-server listening on ${port}`)
+      em.emit('log', `listening on ${port}`)
     })
   }
 
@@ -107,7 +107,7 @@ exports.create = function(options) {
     if (!pkg.actions) { em.emit('load/fail', pkg.callname, `required field (actions) missing`); return em}
     if (pkg.startup) {
       try {
-        var result = pkg.startup()
+        var result = pkg.startup(function(eventName, ...args){em.emit(`module`, `module:${pkg.callname}/${eventName}`, args)})
       } catch( err ){
         em.emit('load/fail', pkg.callname, `startup script error: ${err}`)
         return
@@ -116,6 +116,18 @@ exports.create = function(options) {
     modules[pkg.callname] = pkg
     em.emit('load/loaded', pkg.callname, pkg.printname, pkg.version)
     return em
+  }
+
+  em.setupConsoleLogging = function(name) {
+    em
+      .on('log', (msg) => {console.log(`[${name}]: ` + msg)})
+      .on('warn', (msg) => {console.log(`[${name}/WARN]: ` +msg)})
+      .on('error', (msg) => {console.error(`[${name}/ERROR]: ` +msg)})
+      .on('not-allowed', (token, req) => {console.error(`[${name}/auth]: ` + `A request was made to ${req.url} with invalid token ${token} by ${req.connection.remoteAddress}`)})
+      .on('query', (req) => {console.error(`[${name}/logging]: ` + `A query was made to ${req.url} by ${req.connection.remoteAddress}`)})
+      .on('module', (moduleString, msg) => {console.error(`[${name}/${moduleString}]: ` +msg)})
+      .on('load/loaded', (callname, printname, version) => { console.log(` -> Loaded: ${printname} (${callname}.v${version})`)} )
+      .on('load/fail', (name, reason) => { console.log(` -> FAILED: ${name} reason: ${reason}`)})
   }
 
   return em
