@@ -8,30 +8,40 @@ var server = modman.server.create(options = {
   tokens: {'secret': true}
 })
 
-  .on('log', (msg) => {console.log('[modman]: ' + msg)})
-  .on('warn', (msg) => {console.log('[modman/warn]: ' +msg)})
-  .on('error', (msg) => {console.error('[modman/error]: ' +msg)})
-
+server.setupConsoleLogging('u3mpTEST')
 
 // load modules
 
-console.log('WARNING: this script uses a the included key and certificate, you should probably create your own')
+console.log('\nWARNING: this script uses a the included key and certificate, you should probably create your own\n')
 
-console.log('[modman]: loading modules...')
+console.log('[u3mpTEST]: loading modules...')
 server
-  .on('load/loaded', (callname, printname, version) => { console.log(`  -> Loaded: ${printname} (${callname}.v${version})`)} )
-  .on('load/fail', (name, reason) => { console.log(`  -> FAILED: ${name} reason: ${reason}`)})
-
   .load(require('./packages/sysinfo.js'))
   .load(require('./packages/pm2.js'))
-  .load(require('./packages/services.js').allow(['cron', 'zfs']))
+  .load(require('./packages/services.js').allow(['cron', 'zfs', 'docker']))
+  .load(require('./packages/docker.js').setTimeoutLength(500))
 
 server.listen()
 
-// // test client
-// async function client(){
-//   var client = modman.client.create('localhost', 8000, 'secret', {allowSelfSigned: true})
-//   var networks = await client.query('sysinfo', 'network')
-//   console.log(networks)
-// }
-// client()
+// test client
+async function client(){
+  var client = modman.client.create('localhost', 8000, 'secret', {allowSelfSigned: true})
+  try {
+    var modules = await client.modules()
+    console.log('[client]: available modules')
+    // console.log(modules)
+  } catch (err) {
+    console.error(err)
+  }
+
+  try {
+    var hostname = await client.query('sysinfo', 'hostname')
+    console.log('[client]: test: is your hostname ' + hostname + '?')
+  } catch (err) {
+    console.error(err)
+  }
+
+  console.log('\nif you reach this point without any errors, it looks like everything is working.\n')
+
+}
+client()
