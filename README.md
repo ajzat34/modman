@@ -44,7 +44,7 @@ modman(server)# query sysinfo.hostname
 modman(server)# query pm2.log process=0
 ```
 
-## Leave Client Mode
+## Exit Client Mode
 Use the `exit` command to return to the previous state.
 ```
 modman(server)# exit
