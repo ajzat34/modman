@@ -8,13 +8,13 @@ var server = modman.server.create(options = {
   tokens: {'secret': true}
 })
 
-server.setupConsoleLogging('u3mpTEST')
+server.setupConsoleLogging('modman')
 
 // load modules
 
 console.log('\nWARNING: this script uses a the included key and certificate, you should probably create your own\n')
 
-console.log('[u3mpTEST]: loading modules...')
+console.log('[modman]: loading modules...')
 server
   .load(require('./packages/sysinfo.js'))
   .load(require('./packages/pm2.js'))
