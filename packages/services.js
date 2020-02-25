@@ -5,6 +5,11 @@ module.exports.printname = 'Services'
 module.exports.callname = 'services'
 module.exports.version = '0.1.0'
 
+var em
+module.exports.startup = function(emitter) {
+  em = emitter
+}
+
 var available = {}
 var allow_all = false
 
@@ -26,7 +31,8 @@ module.exports.actions = {
       return error.make(`missing query param: name`, 'malformed_request')
     }
     if (available[q.name] !== 'yes' && !allow_all) {
-      return error.make(`Service ${q.name} not allowed` ,'service_not_allowed')
+      em('not-allowed', q.name)
+      return error.make(`service ${q.name} not allowed` ,'service_not_allowed')
     }
     var d = (await si.services(q.name))[0]
     return {
