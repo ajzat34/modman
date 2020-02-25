@@ -6,3 +6,10 @@ exports.make = function(message, code) {
     }
   }
 }
+
+exports.read = function(o) {
+  var err = new Error(o.message)
+  err.code = o.code
+  err.recv = o
+  return err
+}
