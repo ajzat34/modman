@@ -133,7 +133,7 @@ module.exports.actions = {
     pm2.restart(process, function(err, data){
       if(err){
         if (err.toString().endsWith('not found')) {
-          resolve(error.make(`process or namespace ${q.process} unknown`, 'unknwon_process'))
+          resolve(error.make(`process or namespace ${q.process} unknown`, 'pm2_process_unknown'))
           return
         }
         reject(err)
@@ -153,7 +153,7 @@ module.exports.actions = {
     pm2.stop(process, function(err, data){
       if(err){
         if (err.toString().endsWith('not found')) {
-          resolve(error.make(`process or namespace ${q.process} unknown`, 'unknwon_process'))
+          resolve(error.make(`process or namespace ${q.process} unknown`, 'pm2_process_unknown'))
           return
         }
         reject(err)
