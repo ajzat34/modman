@@ -18,8 +18,9 @@
   },
   "homepage": "https://github.com/ajzat34/modman#readme",
   "dependencies": {
-    "express": "^4.17.1",
-    "mongoose": "^5.9.2",
+    "express": "^4.17.1"
+  },
+  "optionalDependencies": {
     "systeminformation": "^4.22.3"
   }
 }
