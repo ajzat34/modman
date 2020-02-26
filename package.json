@@ -1,6 +1,6 @@
 {
   "name": "modman",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "modular server management",
   "main": "index.js",
   "scripts": {
