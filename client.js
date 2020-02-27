@@ -59,9 +59,9 @@ exports.create = function(address, port, token, options) {
     return request(address, port, `/api/${token}/query/${moduleName}/${actionName}`, options, params)
   }
 
-  r.tick = function() {
+  r.tick = async function() {
     try {
-      var result = request(address, port, `/api/tick`, options)
+      var result = await request(address, port, `/api/tick`, options)
       return {result: result, error: null}
     } catch (err) {
       return {result: false, error: err}
