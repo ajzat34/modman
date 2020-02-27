@@ -17,9 +17,11 @@ function request (hostname, port, path, options, queries) {
       port: port,
       path: reqUrl,
       method: 'GET',
+      timeout: 2000,
     }
     // most servers use self signed certs, so the option to disable checking for this is enabled
     if (options.allowSelfSigned) { reqOptions.rejectUnauthorized = false }
+    if (options.timeout) { reqOptions.timeout = options.timeout }
     // send the request
     const req = https.request(reqOptions, function(res) {
       var data = ''
