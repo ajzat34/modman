@@ -42,6 +42,10 @@ function request (hostname, port, path, options, queries) {
         if (p.error) { reject(error.read(p.error)) }
         resolve(p)
       })
+
+      res.on('timeout', function(){
+        reject(new Error(`timeout`))
+      })
     })
     // reject errors
     req.on('error', function(err){ reject(err) })
