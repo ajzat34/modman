@@ -28,8 +28,7 @@ function twrap(fn){return new Promise(async function(resolve, reject){
   }, timeout)
   try {
     let d = await fn
-    console.log(d)
-    resolve()
+    resolve(d)
   } catch (err) {
     console.log(err)
     reject(err)
@@ -39,6 +38,17 @@ function twrap(fn){return new Promise(async function(resolve, reject){
 module.exports.actions = {
   list: async function(q, req){
     let d = await twrap(si.dockerContainers())
-    console.log(d)
+    var r = []
+    for (var i in d){
+      var n = d[i]
+      r.push({
+        name: n.name,
+        image: n.image,
+        command: n.command,
+        restarts: n.restartCount,
+        platform: n.platform,
+      })
+    }
+    return r
   }
 }
