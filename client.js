@@ -49,6 +49,7 @@ function request (hostname, port, path, options, queries) {
     })
     // reject errors
     req.on('error', function(err){ reject(err) })
+    req.setTimeout(timeout)
     req.end()
   })
 }
