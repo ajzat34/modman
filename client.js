@@ -50,7 +50,7 @@ function request (hostname, port, path, options, queries) {
     req.on('timeout', function(){
       reject(new Error(`timeout`))
     })
-    req.setTimeout(timeout)
+    // req.setTimeout(timeout)
     req.end()
   })
 }
