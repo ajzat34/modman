@@ -44,12 +44,12 @@ function request (hostname, port, path, options, queries) {
         resolve(p)
       })
 
-      res.on('timeout', function(){
-        reject(new Error(`timeout`))
-      })
     })
     // reject errors
     req.on('error', function(err){ reject(err) })
+    req.on('timeout', function(){
+      reject(new Error(`timeout`))
+    })
     req.setTimeout(timeout)
     req.end()
   })
