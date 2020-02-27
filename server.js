@@ -41,6 +41,11 @@ exports.create = function(options) {
     res.send(`modman server\nlist modules at /api/<key>/modules\ncall modules with /api/<key>/module/<module>/<action>\n`)
   })
 
+  // setup api calls
+  app.get('/api/tick', function(req, res){
+    res.json(true)
+  })
+
   // module list
   app.get('/api/:token/modules', function(req, res){
     if (auth(req, res, options.tokens, em)){return}

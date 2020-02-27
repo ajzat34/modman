@@ -59,6 +59,15 @@ exports.create = function(address, port, token, options) {
     return request(address, port, `/api/${token}/query/${moduleName}/${actionName}`, options, params)
   }
 
+  r.tick = function() {
+    try {
+      var result = request(address, port, `/api/tick`, options)
+      return {result: result, error: null}
+    } catch (err) {
+      return {result: false, error: err}
+    }
+  }
+
   r.modules = function(moduleName, actionName, params) {
     return request(address, port, `/api/${token}/modules`, options, params)
   }
