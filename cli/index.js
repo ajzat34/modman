@@ -6,7 +6,8 @@ const mainHelp = `Help Page:
  - connect <host> <token> [<port>] (connect to a server)`
 const clientHelp = `Help Page:
  - modules (list modules)
- - query <module>.<action> [<field>=<value> ...]`
+ - query <module>.<action> [<field>=<value> ...]
+ - tick`
 
 var client
 var modules
@@ -134,6 +135,11 @@ const clientContext = {
       r(`FAIL: ${err.toString()} (${err.code})`)
     }
   },
+
+  'tick': async function() {
+    var result = await client.tick()
+    r(result.result)
+  }
 }
 
 // start the main context
