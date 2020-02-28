@@ -26,6 +26,13 @@ module.exports.allowAll = function(){
 }
 
 module.exports.actions = {
+  list: async function(q){
+    var listed = Object.keys(available).filter(function(name){return (available[name]==='yes')})
+    if (allow_all){
+      listed.push('all')
+    }
+    return listed
+  },
   query: async function(q) {
     if (!q.name) {
       return error.make(`missing query param: name`, 'malformed_request')
