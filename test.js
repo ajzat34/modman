@@ -23,6 +23,7 @@ server
   .load(modman.getpkg('pm2'))
   .load(modman.getpkg('services').allow(['cron', 'docker']))
   .load(modman.getpkg('docker').setTimeoutLength(500))
+  .load(modman.getpkg('mailman'))
 
 // start the server
 server.listen()
