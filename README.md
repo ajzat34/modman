@@ -2,6 +2,33 @@
 Customizable, Expandable, Server Monitoring & Management API.
 
 # Getting Started
+### Installing:
+* create a project
+* install `npm install ajzat34/modman`
+* include `const modman = require('modman')`
+* create a key and self signed cert (https://nodejs.org/en/knowledge/HTTP/servers/how-to-create-a-HTTPS-server/)
+Sample script:
+```
+// create server
+var server = modman.server.create(options = {
+  key: fs.readFileSync('key.pem'),
+  cert: fs.readFileSync('cert.pem'),
+  tokens: {'secret': true}
+})
+// automaticly configure console logging
+server.setupConsoleLogging('modman')
+
+console.log('[modman]: loading modules...')
+server
+  .load(modman.getpkg('sysinfo'))
+  .load(modman.getpkg('pm2'))
+  .load(modman.getpkg('services').allow(['cron']))
+  .load(modman.getpkg('docker').setTimeoutLength(500))
+  .load(modman.getpkg('mailman'))
+  
+ // start the server
+server.listen()
+```
 
 # CLI Client
 The Command Line tool is an interactive environment to connect to and control modman servers.
