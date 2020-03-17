@@ -9,6 +9,8 @@ Customizable, Expandable, Server Monitoring & Management API.
 * create a key and self signed cert (https://nodejs.org/en/knowledge/HTTP/servers/how-to-create-a-HTTPS-server/)
 Sample script:
 ```
+const modman = require('modman')
+
 // create server
 var server = modman.server.create(options = {
   key: fs.readFileSync('key.pem'),
