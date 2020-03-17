@@ -32,7 +32,10 @@ server.load(modman.getpkg('mailman'))
 server.listen()
 ```
 
-# CLI Client
+## PM2
+if you see: ` -> FAILED: pm2 reason: startup script error: Error: pm2 not installed` you probably need to run `npm link pm2` to get pm2 working
+
+## CLI Client
 The Command Line tool is an interactive environment to connect to and control modman servers.
 ```sh
 $ node cli/index.js
