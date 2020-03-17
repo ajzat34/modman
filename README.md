@@ -22,12 +22,11 @@ var server = modman.server.create(options = {
 server.setupConsoleLogging('modman')
 
 console.log('[modman]: loading modules...')
-server
-  .load(modman.getpkg('sysinfo'))
-  .load(modman.getpkg('pm2'))
-  .load(modman.getpkg('services').allow(['cron']))
-  .load(modman.getpkg('docker').setTimeoutLength(500))
-  .load(modman.getpkg('mailman'))
+server.load(modman.getpkg('sysinfo'))
+server.load(modman.getpkg('pm2'))
+server.load(modman.getpkg('services').allow(['cron']))
+server.load(modman.getpkg('docker').setTimeoutLength(500))
+server.load(modman.getpkg('mailman'))
   
  // start the server
 server.listen()
