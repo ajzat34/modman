@@ -10,6 +10,7 @@ Customizable, Expandable, Server Monitoring & Management API.
 Sample script:
 ```
 const modman = require('modman')
+const fs = require('fs')
 
 // create server
 var server = modman.server.create(options = {
