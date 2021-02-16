@@ -21,6 +21,6 @@
     "express": "^4.17.1"
   },
   "optionalDependencies": {
-    "systeminformation": "^4.22.3"
+    "systeminformation": "^5.3.1"
   }
 }
